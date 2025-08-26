@@ -11,7 +11,6 @@ class TMDBService {
     private let baseURL = "https://api.themoviedb.org/3"
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
     func fetchGenres() async throws -> [Genre] {
