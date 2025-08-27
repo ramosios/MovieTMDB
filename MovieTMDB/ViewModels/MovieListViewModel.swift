@@ -28,7 +28,6 @@ class MoviesListViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         currentPage = 1
-        movies.removeAll()
         canLoadMorePages = true
 
         do {
@@ -54,8 +53,12 @@ class MoviesListViewModel: ObservableObject {
             let newMovies = try await tmdbService.fetchMovies(forGenre: genreId, page: currentPage)
             if newMovies.isEmpty {
                 canLoadMorePages = false
+            } else {
+                // Filter out movies that are already in the list to prevent duplicates
+                let existingMovieIDs = Set(self.movies.map { $0.id })
+                let uniqueNewMovies = newMovies.filter { !existingMovieIDs.contains($0.id) }
+                self.movies.append(contentsOf: uniqueNewMovies)
             }
-            self.movies.append(contentsOf: newMovies)
         } catch {
             currentPage -= 1 // Revert page increment on failure
             errorMessage = "Failed to load more movies: \(error.localizedDescription)"
