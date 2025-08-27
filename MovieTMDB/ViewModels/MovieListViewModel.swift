@@ -15,7 +15,7 @@ class MoviesListViewModel: ObservableObject {
     private let tmdbService: TMDBService
     private let genreId: Int
     private var currentPage = 1
-    private var canLoadMorePages = true
+    var canLoadMorePages = true
 
     init(genreId: Int, tmdbService: TMDBService = TMDBService()) {
         self.genreId = genreId
@@ -60,7 +60,6 @@ class MoviesListViewModel: ObservableObject {
                 self.movies.append(contentsOf: uniqueNewMovies)
             }
         } catch {
-            currentPage -= 1 // Revert page increment on failure
             errorMessage = "Failed to load more movies: \(error.localizedDescription)"
         }
 

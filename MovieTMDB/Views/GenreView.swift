@@ -33,6 +33,6 @@ struct GenreView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
-

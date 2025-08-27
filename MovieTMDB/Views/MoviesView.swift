@@ -10,9 +10,13 @@ struct MoviesListView: View {
     @StateObject private var viewModel: MoviesListViewModel
     private let genreName: String
 
-    private let columns = [
-        GridItem(.adaptive(minimum: 150))
-    ]
+    private var columns: [GridItem] {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return Array(repeating: GridItem(.flexible()), count: 4)
+        } else {
+            return [GridItem(.adaptive(minimum: 150))]
+        }
+    }
 
     init(genreId: Int, genreName: String) {
         _viewModel = StateObject(wrappedValue: MoviesListViewModel(genreId: genreId))
@@ -58,7 +62,7 @@ struct MoviesListView: View {
                 ForEach(viewModel.movies) { movie in
                     MoviePosterView(movie: movie)
                         .onAppear {
-                            if movie == viewModel.movies.last {
+                            if movie == viewModel.movies.last && viewModel.canLoadMorePages {
                                 Task {
                                     await viewModel.loadMoreMovies()
                                 }
